@@ -26,6 +26,9 @@ if ( ! defined( 'BACON_IPSUM_SMS_URL_ROOT' ) ) {
 	define( 'BACON_IPSUM_SMS_URL_ROOT', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 }
 
+// Autoload
+require_once "vendor/autoload.php";
+
 // Load plugin files.
 require_once BACON_IPSUM_SMS_ROOT . 'includes/admin.php';
 require_once BACON_IPSUM_SMS_ROOT . 'includes/rest-api.php';
