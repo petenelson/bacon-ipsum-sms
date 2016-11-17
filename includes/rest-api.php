@@ -40,6 +40,7 @@ function handle_sms_request( $request ) {
 		'format' => 'text',
 	);
 
+	// Call the Any Ipsum plugin to generate filler.
 	$filler = apply_filters( 'anyipsum-generate-filler', $args );
 
 	$body = trim( strtolower( $request['Body'] ) );
