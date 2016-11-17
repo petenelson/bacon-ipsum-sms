@@ -55,6 +55,7 @@ function send_bacon_ipsum_response( $served, $result, $request ) {
 			<Message><?php echo reset( $result->data ) ?></Message>
 		</Response><?php
 		$served = true;
+		exit;
 	}
 	return $served;
 }
