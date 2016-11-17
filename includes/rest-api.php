@@ -30,21 +30,34 @@ function add_sms_endpoint() {
 
 function handle_sms_request( $request ) {
 
-	$filler = apply_filters( 'anyipsum-generate-filler', array(
+	$args = array(
 		'number-of-sentences' => 3,
 		'number-of-paragraphs' => 1,
 		'max-number-of-paragraphs' => 1,
 		'start-with-lorem' => 1,
-		)
+		'type' => 'meat-and-filler',
+		'source' => 'sms',
+		'format' => 'text',
 	);
+
+	$filler = apply_filters( 'anyipsum-generate-filler', $args );
 
 	$body = trim( strtolower( $request['Body'] ) );
 
+	$response = '';
+
 	if ( 'bacon ipsum' === $body ) {
-		return reset( $filler );
+		$response = reset( $filler );
+		$args['output'] = $response;
 	} else {
-		return "Try 'bacon ipsum', it's delicious.";
+		$response = "Try 'bacon ipsum', it's delicious.";
+		$args['error'] = $body;
 	}
+
+	// send notification for anything else that's hooked in.
+	do_action( 'anyipsum-filler-generated', $args );
+
+	return $response;
 }
 
 function send_bacon_ipsum_response( $served, $result, $request ) {
