@@ -4,7 +4,7 @@ namespace Bacon_Ipsum\SMS\REST_API;
 
 function setup() {
 	add_action( 'rest_api_init', __NAMESPACE__ . '\add_sms_endpoint' );
-	add_filter( 'rest_pre_serve_request', __NAMESPACE__ . '\update_content_type', 10, 3 );
+	add_filter( 'rest_pre_serve_request', __NAMESPACE__ . '\send_bacon_ipsum_response', 10, 3 );
 }
 
 function add_sms_endpoint() {
@@ -16,9 +16,6 @@ function add_sms_endpoint() {
 			'callback'      => __NAMESPACE__ . '\handle_sms_request',
 			'methods'       => array( 'GET', 'POST' ),
 			'args'          => array(
-				'From' => array(
-					'required' => false,
-					),
 				'Body' => array(
 					'required' => false,
 					),
@@ -41,45 +38,24 @@ function handle_sms_request( $request ) {
 		)
 	);
 
-	$response = new \stdClass();
-	$response->send_result = false;
-	$response->filler = $filler;
-
-
-	$reply_to = $request['From'];
-	$from = get_option( 'bacon-ipsum-sms-twilio-phone' );
 	$body = trim( strtolower( $request['Body'] ) );
 
 	if ( 'bacon ipsum' === $body ) {
-		$reply_with = $filler;	
+		return $filler;	
 	} else {
-		$reply_with = "I don't understand that.";
+		return "Try 'bacon ipsum', it's delicious.";
 	}
-
-	if ( ! empty( $reply_to ) ) {
-
-		$client = new \Twilio\Rest\Client( get_option( 'bacon-ipsum-sms-twilio-sid' ), get_option( 'bacon-ipsum-sms-twilio-token' ) );
-
-		// Use the client to do fun stuff like send text messages!
-		$client->messages->create(
-			// the number you'd like to send the message to
-			$reply_to,
-			array(
-			// A Twilio phone number you purchased at twilio.com/console
-				'from' => $from,
-				// the body of the text message you'd like to send
-				'body' => $reply_with,
-			)
-		);
-
-	}
-
-	return rest_ensure_response( $response );
 }
 
-function update_content_type( $served, $result, $request ) {
+function send_bacon_ipsum_response( $served, $result, $request ) {
 	if ( '/bacon-ipsum/v1/sms' === $request->get_route() ) {
-		header( 'Content-Type: application/json' );
+		header( 'Content-Type: text/xml' );
+		?><?xml version="1.0" encoding="UTF-8"?>
+		<Response>
+			<Message><?php echo reset( $result->data ) ?></Message>
+		</Response>
+		<?php
+		$served = true;
 	}
 	return $served;
 }
