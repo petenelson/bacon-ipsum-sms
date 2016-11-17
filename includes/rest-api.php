@@ -53,8 +53,7 @@ function send_bacon_ipsum_response( $served, $result, $request ) {
 		?><?xml version="1.0" encoding="UTF-8"?>
 		<Response>
 			<Message><?php echo reset( $result->data ) ?></Message>
-		</Response>
-		<?php
+		</Response><?php
 		$served = true;
 	}
 	return $served;
