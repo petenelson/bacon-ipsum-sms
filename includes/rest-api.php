@@ -41,7 +41,7 @@ function handle_sms_request( $request ) {
 	$body = trim( strtolower( $request['Body'] ) );
 
 	if ( 'bacon ipsum' === $body ) {
-		return $filler;	
+		return reset( $filler );
 	} else {
 		return "Try 'bacon ipsum', it's delicious.";
 	}
@@ -52,7 +52,7 @@ function send_bacon_ipsum_response( $served, $result, $request ) {
 		header( 'Content-Type: text/xml' );
 		?><?xml version="1.0" encoding="UTF-8"?>
 		<Response>
-			<Message><?php echo reset( $result->data ) ?></Message>
+			<Message><?php echo $result->data; ?></Message>
 		</Response><?php
 		$served = true;
 		exit;
