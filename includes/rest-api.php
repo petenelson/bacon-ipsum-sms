@@ -61,6 +61,8 @@ function handle_sms_request( $request ) {
 }
 
 function send_bacon_ipsum_response( $served, $result, $request ) {
+
+	// Reply with Twilio XML for SMS requests.
 	if ( '/bacon-ipsum/v1/sms' === $request->get_route() ) {
 		header( 'Content-Type: text/xml' );
 		?><?xml version="1.0" encoding="UTF-8"?>
@@ -70,5 +72,6 @@ function send_bacon_ipsum_response( $served, $result, $request ) {
 		$served = true;
 		exit;
 	}
+
 	return $served;
 }
